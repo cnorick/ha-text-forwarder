@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pi=${1:-walnut}
+pi=${1:-omada}
 SERVICE_NAME=ha-text-forwarder.service
 
 echo "copying files to test machine (${pi})"
