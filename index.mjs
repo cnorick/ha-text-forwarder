@@ -16,7 +16,7 @@ app.post('/text-message', async (req, res) => {
   const iceContacts = process.env.ICE_PHONES.split(';').map(contact => contact.trim());
   const numbers = [];
   if (contacts.includes('ice')) {
-    numbers.push([...iceContacts, process.env.SARAH_PHONE, process.env.NATHAN_PHONE])
+    numbers.push(...[...iceContacts, process.env.SARAH_PHONE, process.env.NATHAN_PHONE])
   }
   else {
     if (contacts.includes('sarah')) {
@@ -25,10 +25,13 @@ app.post('/text-message', async (req, res) => {
     if (contacts.includes('nathan')) {
       numbers.push(process.env.NATHAN_PHONE)
     }
+    if (contacts.includes('garrett')) {
+      numbers.push(process.env.GARRETT_PHONE)
+    }
   }
   
   try {
-    console.log(`recieved message: ${message}, numbers: ${numbers}`)
+    console.log(`received message: "${message}", numbers: ${numbers}`)
     await sendMessageToNumbers(message, numbers);
     res.send('success');
   }
@@ -67,7 +70,7 @@ const sendMessageToNumbers = async (message, numbers) => {
   await publishTextPromise
     .then(function (data) {
       console.log(
-        `Message '${message}' sent to the numbers [${numbers}]`
+        `Message '${message}'\nsent to the numbers: ${phoneVal}`
       );
       console.log("MessageID is " + data.MessageId);
     })
