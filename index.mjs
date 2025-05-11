@@ -8,7 +8,7 @@ app.use(express.json({strict: false}));
 
 app.post('/text-message', async (req, res) => {
   console.log({body: req.body});
-  let { message, contacts } = req.body;
+  let { message, contacts, phoneNumbers } = req.body;
   contacts ??= [];
 
   message = Buffer(message, 'base64').toString('ascii')
@@ -28,6 +28,15 @@ app.post('/text-message', async (req, res) => {
     if (contacts.includes('garrett')) {
       numbers.push(process.env.GARRETT_PHONE)
     }
+  }
+
+  if (phoneNumbers) {
+    numbers.push(...phoneNumbers.filter(phone => /^\d{11}$/.test(phone)));
+  }
+
+  if (numbers.length === 0) {
+    res.status(400).send('No valid phone numbers provided');
+    return;
   }
   
   try {
