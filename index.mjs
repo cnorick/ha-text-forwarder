@@ -11,7 +11,9 @@ app.post('/text-message', async (req, res) => {
   let { message, contacts, phoneNumbers } = req.body;
   contacts ??= [];
 
-  message = Buffer(message, 'base64').toString('ascii')
+  message = Buffer(message, 'base64').toString('utf-8').trim();
+  // Remove control characters from the message
+  message = message.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
 
   const iceContacts = process.env.ICE_PHONES.split(';').map(contact => contact.trim());
   const numbers = [];
